@@ -6,9 +6,54 @@ import {
   getFirestore, doc, setDoc, getDoc, collection, onSnapshot, increment
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-// Conexão com o Firebase
 const firebaseConfig = {
-  // ...sua config aqui...
+  apiKey: "AIzaSy...",
+  authDomain: "seu-projeto.firebaseapp.com",
+  projectId: "seu-projeto-id", // <-- O erro acontece porque essa linha (ou todas) está faltando
+  storageBucket: "seu-projeto.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:123456:web:abcde123"
+};
+
+// Dentro do seu script.js:
+window.votar = async function(idCandidato) {
+  // 1. Verifica se o usuário está logado
+  if (!usuarioAtual) {
+    alert("Você precisa fazer login com o Google antes de votar!");
+    return;
+  }
+
+  // 2. Desabilita os botões temporariamente para evitar cliques duplos (flooding)
+  bloquearTodosOsBotoes(true, "Processando...");
+
+  // Criando as referências dos documentos no banco de dados
+  const userRef = doc(db, "usuarios_votos", usuarioAtual.uid);
+  const candidatoRef = doc(db, "votos", idCandidato);
+
+  try {
+    // 3. Salva na coleção "usuarios_votos" que ESSE UID já votou
+    await setDoc(userRef, { 
+      votouEm: idCandidato,
+      dataVoto: new Date()
+    });
+
+    // 4. Soma +1 no contador de votos do candidato escolhido
+    await setDoc(candidatoRef, { 
+      id: idCandidato,
+      votos: increment(1) 
+    }, { merge: true });
+
+    // 5. Feedback de sucesso para o usuário
+    alert("Seu voto foi computado com sucesso! Obrigado por participar.");
+    marcarBotaoVotado(idCandidato);
+
+  } catch (error) {
+    console.error("Erro ao salvar voto:", error);
+    alert("Houve um erro ao processar seu voto. Verifique se você já não votou antes.");
+    
+    // Se der erro, reavalia se ele já tinha votado para travar ou destravar os botões
+    verificarSeJaVotou(usuarioAtual.uid);
+  }
 };
 
 const app = initializeApp(firebaseConfig);
