@@ -73,17 +73,17 @@ window.votar = async function(nome) {
 // Ranking em tempo real
 
 onSnapshot(collection(db, "participantes"), (snapshot) => {
+    document.getElementById(item.nome).innerText = item.votos + " votos";
+    let ranking = [];
 
-  let ranking = [];
+    snapshot.forEach((documento) => {
 
-  snapshot.forEach((documento) => {
+        ranking.push({
+        nome: documento.id,
+        votos: documento.data().votos || 0
+        });
 
-    ranking.push({
-    nome: documento.id,
-    votos: documento.data().votos || 0
     });
-
-  });
 
   ranking.sort((a, b) => (b.votos || 0) - (a.votos || 0));
 
@@ -104,7 +104,7 @@ onSnapshot(collection(db, "participantes"), (snapshot) => {
       </div>
     `;
 
-  });
+    });
 
   document.getElementById("ranking").innerHTML = html;
 
