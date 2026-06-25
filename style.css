@@ -161,3 +161,93 @@ span{
 .bronze{
     border-left:6px solid #cd7f32;
 }
+.ranking-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.ranking-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 18px;
+    margin: 10px 0;
+
+    border-radius: 14px;
+    background: #ffffff;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+    transition: transform 0.2s ease;
+}
+
+.ranking-card:hover {
+    transform: scale(1.02);
+}
+
+.ranking-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.posicao {
+    font-weight: bold;
+}
+
+.nome {
+    font-weight: 600;
+}
+
+.votos {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.votos small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+/* TOP 3 DESTACADO */
+.primeiro {
+    border-left: 6px solid gold;
+    background: linear-gradient(90deg, #fff7d6, #ffffff);
+}
+
+.segundo {
+    border-left: 6px solid silver;
+    background: linear-gradient(90deg, #f2f2f2, #ffffff);
+}
+
+.terceiro {
+    border-left: 6px solid #cd7f32;
+    background: linear-gradient(90deg, #f7e3d0, #ffffff);
+}
+
+.ranking-card {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: aparecer 0.4s ease forwards;
+}
+
+@keyframes aparecer {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); background: #fff7a8; }
+    100% { transform: scale(1); }
+}
+
+.highlight {
+    animation: pulse 0.4s ease;
+}
