@@ -136,3 +136,28 @@ span{
     margin-top:10px;
     font-weight:bold;
 }
+.ranking-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin:10px 0;
+    padding:12px;
+
+    background:white;
+    border-radius:12px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+}
+
+.ouro{
+    border-left:6px solid gold;
+}
+
+.prata{
+    border-left:6px solid silver;
+}
+
+.bronze{
+    border-left:6px solid #cd7f32;
+}

@@ -77,10 +77,22 @@ onSnapshot(collection(db, "participantes"), (snapshot) => {
   let ranking = [];
 
   snapshot.forEach((documento) => {
+
+    const nome = documento.id;
+    const votos = documento.data().votos || 0;
+
     ranking.push({
-      nome: documento.id,
-      votos: documento.data().votos || 0
+      nome: nome,
+      votos: votos
     });
+
+    // Atualiza o contador do card
+    const span = document.getElementById(nome);
+
+    if (span) {
+      span.innerText = votos + " votos";
+    }
+
   });
 
   ranking.sort((a, b) => b.votos - a.votos);
@@ -90,15 +102,29 @@ onSnapshot(collection(db, "participantes"), (snapshot) => {
   ranking.forEach((item, posicao) => {
 
     let medalha = "";
+    let classe = "";
 
-    if (posicao === 0) medalha = "🥇";
-    else if (posicao === 1) medalha = "🥈";
-    else if (posicao === 2) medalha = "🥉";
+    if (posicao === 0) {
+      medalha = "🥇";
+      classe = "ouro";
+    }
+    else if (posicao === 1) {
+      medalha = "🥈";
+      classe = "prata";
+    }
+    else if (posicao === 2) {
+      medalha = "🥉";
+      classe = "bronze";
+    }
+
+    const nomeFormatado = item.nome
+      .replaceAll("_", " ")
+      .replace(/\b\w/g, letra => letra.toUpperCase());
 
     html += `
-      <div class="ranking-item">
-        ${medalha} ${posicao + 1}º - ${item.nome}
-        (${item.votos} votos)
+      <div class="ranking-item ${classe}">
+        <span>${medalha} ${posicao + 1}º - ${nomeFormatado}</span>
+        <strong>${item.votos} votos</strong>
       </div>
     `;
   });
