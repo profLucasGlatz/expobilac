@@ -15,7 +15,8 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
