@@ -38,10 +38,6 @@ const usuarioLogado = document.getElementById("usuarioLogado");
 
 let usuarioAtual = null;
 
-onAuthStateChanged(auth, (user) => {
-    usuarioAtual = user;
-});
-
 botaoLogin.addEventListener("click", async () => {
     const email = resultado.user.email;
 
@@ -74,61 +70,24 @@ document.getElementById("usuarioLogado").innerText =
 
 });
 
-// Tornar a função acessível ao HTML
-window.votar = async function (nome) {
+window.votar = async function(nome) {
 
-    if (!usuarioAtual) {
-    alert("Carregando autenticação, tente novamente.");
-    return;
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("Faça login com sua conta da escola.");
+        return;
     }
 
-    if (!usuarioAtual) {
-    alert("Faça login com sua conta da escola.");
-    return;
-    }
+    const email = user.email;
 
-    const email = usuarioAtual.email;
-
-    // 2. valida domínio da escola
     if (!email.endsWith("@escola.pr.gov.br")) {
-        alert("Use sua conta institucional (@escola).");
+        alert("Use sua conta institucional.");
         return;
     }
 
     const votoRef = doc(db, "votos", email);
-
-    try {
-
-        // 3. verifica se já votou
-        const votoExistente = await getDoc(votoRef);
-
-        if (votoExistente.exists()) {
-            alert("Você já votou!");
-            return;
-        }
-
-        // 4. registra voto no participante
-        const participanteRef = doc(db, "participantes", nome);
-
-        await updateDoc(participanteRef, {
-            votos: increment(1)
-        }).catch(async () => {
-            await setDoc(participanteRef, { votos: 1 });
-        });
-
-        // 5. salva que esse email já votou
-        await setDoc(votoRef, {
-            participante: nome,
-            data: new Date().toISOString()
-        });
-
-        alert("Voto registrado com sucesso!");
-
-    } catch (erro) {
-        console.error(erro);
-        alert("Erro ao registrar voto.");
-    }
-};
+}
 // Ranking em tempo real
 
 onSnapshot(collection(db, "participantes"), (snapshot) => {
