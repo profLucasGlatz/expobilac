@@ -1,22 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-
 import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  increment,
-  collection,
-  onSnapshot
+  getFirestore, doc, getDoc, setDoc, updateDoc, increment,
+  collection, onSnapshot
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
-
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -37,117 +25,119 @@ const provider = new GoogleAuthProvider();
 const botaoLogin = document.getElementById("loginGoogle");
 const usuarioLogado = document.getElementById("usuarioLogado");
 
-let usuarioAtual = null;
-
+// ---------- LOGIN ----------
 botaoLogin.addEventListener("click", async () => {
-    const email = resultado.user.email;
-
-if (!email.endsWith("@escola.pr.gov.br")) {
-    alert("Use seu e-mail da escola.");
-    await signOut(auth);
-    return;
-}
-
-document.getElementById("usuarioLogado").innerText =
-    "Logado como: " + email;
-
   try {
-
     const resultado = await signInWithPopup(auth, provider);
-
     const email = resultado.user.email;
-
-    usuarioLogado.innerText = "Logado como: " + email;
-
-    console.log(email);
-
-  } catch (erro) {
-
-    console.error(erro);
-
-    alert("Erro ao fazer login.");
-
-  }
-
-});
-
-window.votar = async function(nome) {
-
-    const user = auth.currentUser;
-
-    if (!user) {
-        alert("Faça login com sua conta da escola.");
-        return;
-    }
-
-    const email = user.email;
 
     if (!email.endsWith("@escola.pr.gov.br")) {
-        alert("Use sua conta institucional.");
-        return;
+      alert("Use seu e-mail da escola.");
+      await signOut(auth);
+      return;
     }
 
+    usuarioLogado.innerText = "Logado como: " + email;
+    console.log("Login OK:", email);
+  } catch (erro) {
+    console.error(erro);
+    alert("Erro ao fazer login.");
+  }
+});
+
+// Mantém o texto atualizado mesmo se a página recarregar
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    usuarioLogado.innerText = "Logado como: " + user.email;
+  } else {
+    usuarioLogado.innerText = "";
+  }
+});
+
+// ---------- VOTAR ----------
+window.votar = async function (nome) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("Faça login com sua conta da escola.");
+    return;
+  }
+
+  const email = user.email;
+  if (!email.endsWith("@escola.pr.gov.br")) {
+    alert("Use sua conta institucional.");
+    return;
+  }
+
+  try {
+    // 1) Verifica se este aluno já votou
     const votoRef = doc(db, "votos", email);
-}
-// Ranking em tempo real
+    const votoSnap = await getDoc(votoRef);
 
+    if (votoSnap.exists()) {
+      alert("Você já votou! Só é permitido um voto por aluno.");
+      return;
+    }
+
+    // 2) Registra que este aluno votou (em quem)
+    await setDoc(votoRef, {
+      participante: nome,
+      data: new Date().toISOString()
+    });
+
+    // 3) Incrementa o contador do participante
+    //    (cria o documento se ainda não existir)
+    const participanteRef = doc(db, "participantes", nome);
+    const partSnap = await getDoc(participanteRef);
+
+    if (partSnap.exists()) {
+      await updateDoc(participanteRef, { votos: increment(1) });
+    } else {
+      await setDoc(participanteRef, { votos: 1 });
+    }
+
+    alert("Voto registrado com sucesso! 🎉");
+  } catch (erro) {
+    console.error(erro);
+    alert("Erro ao registrar voto.");
+  }
+};
+
+// ---------- RANKING EM TEMPO REAL ----------
 onSnapshot(collection(db, "participantes"), (snapshot) => {
-
   let ranking = [];
 
   snapshot.forEach((documento) => {
-    ranking.push({
-      nome: documento.id,
-      votos: documento.data().votos || 0
-    });
+    const votos = documento.data().votos || 0;
+    ranking.push({ nome: documento.id, votos });
 
-    // atualiza contador no card
+    // Atualiza contador dentro do card
     const span = document.getElementById(documento.id);
-
     if (span) {
-      span.innerText = (documento.data().votos || 0) + " votos";
+      span.innerText = votos + " votos";
     }
   });
 
   ranking.sort((a, b) => b.votos - a.votos);
 
   let html = "";
-
   ranking.forEach((item, posicao) => {
-
-    let medalha = "";
-    let classe = "";
-
-    if (posicao === 0) {
-      medalha = "🥇";
-      classe = "primeiro";
-    } else if (posicao === 1) {
-      medalha = "🥈";
-      classe = "segundo";
-    } else if (posicao === 2) {
-      medalha = "🥉";
-      classe = "terceiro";
-    }
+    let medalha = "", classe = "";
+    if (posicao === 0) { medalha = "🥇"; classe = "primeiro"; }
+    else if (posicao === 1) { medalha = "🥈"; classe = "segundo"; }
+    else if (posicao === 2) { medalha = "🥉"; classe = "terceiro"; }
 
     const nomeFormatado = item.nome
       .replaceAll("_", " ")
       .replace(/\b\w/g, l => l.toUpperCase());
 
     html += `
-      <div class="ranking-card ${classe}" style="animation-delay: ${posicao * 80}ms">
-        <div class="ranking-info">
-          <span class="posicao">${medalha} ${posicao + 1}º</span>
-          <span class="nome">${nomeFormatado}</span>
-        </div>
-
-        <div class="votos">
-          ${item.votos}
-          <small>votos</small>
-        </div>
+      <div class="rank-item ${classe}">
+        <div class="rank-pos">${medalha} ${posicao + 1}º ${nomeFormatado}</div>
+        <div class="rank-votos">${item.votos} votos</div>
       </div>
     `;
   });
 
   document.getElementById("ranking").innerHTML = html;
-
 });
