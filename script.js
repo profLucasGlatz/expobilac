@@ -21,52 +21,55 @@ const firebaseConfig = {
   measurementId: "G-3SE6CZ8JBP"
 };
 
+if (!localStorage.getItem("userId")) {
+  localStorage.setItem("userId", crypto.randomUUID());
+}
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Tornar a função acessível ao HTML
 window.votar = async function(nome) {
 
-  const jaVotou = localStorage.getItem("votacaoCosplay");
+  const userId = localStorage.getItem("userId");
 
-  if (jaVotou) {
-    alert("Você já registrou seu voto.");
-    return;
-  }
-
-  const participanteRef = doc(db, "participantes", nome);
+  const votoRef = doc(db, "votos", userId);
 
   try {
+
+    const votoExistente = await getDoc(votoRef);
+
+    if (votoExistente.exists()) {
+      alert("Você já votou!");
+      return;
+    }
+
+    const participanteRef = doc(db, "participantes", nome);
 
     const participante = await getDoc(participanteRef);
 
     if (participante.exists()) {
-
       await updateDoc(participanteRef, {
         votos: increment(1)
       });
-
     } else {
-
       await setDoc(participanteRef, {
         votos: 1
       });
-
     }
 
-    localStorage.setItem("votacaoCosplay", "sim");
+    await setDoc(votoRef, {
+      participante: nome,
+      data: new Date()
+    });
 
     alert("Voto registrado com sucesso!");
 
   } catch (erro) {
-
     console.error(erro);
-
     alert("Erro ao registrar voto.");
-
   }
 };
-
 // Ranking em tempo real
 
 onSnapshot(collection(db, "participantes"), (snapshot) => {
@@ -76,13 +79,13 @@ onSnapshot(collection(db, "participantes"), (snapshot) => {
   snapshot.forEach((documento) => {
 
     ranking.push({
-      nome: documento.id,
-      votos: documento.data().votos
+    nome: documento.id,
+    votos: documento.data().votos || 0
     });
 
   });
 
-  ranking.sort((a, b) => b.votos - a.votos);
+  ranking.sort((a, b) => (b.votos || 0) - (a.votos || 0));
 
   let html = "";
 
