@@ -25,25 +25,40 @@ const provider = new GoogleAuthProvider();
 const botaoLogin = document.getElementById("loginGoogle");
 const usuarioLogado = document.getElementById("usuarioLogado");
 
-// ---------- LOGIN ----------
-botaoLogin.addEventListener("click", async () => {
+provider.setCustomParameters({
+  hd: "escola.pr.gov.br",
+  prompt: "select_account"
+});
+
+const dominioPermitido = "@escola.pr.gov.br";
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
   try {
     const resultado = await signInWithPopup(auth, provider);
-    const email = resultado.user.email;
+    const usuario = resultado.user;
 
-    if (!email.endsWith("@escola.pr.gov.br")) {
-      alert("Use seu e-mail da escola.");
+    if (!usuario.email || !usuario.email.toLowerCase().endsWith(dominioPermitido)) {
+      alert("Use apenas uma conta @escola.pr.gov.br para votar.");
       await signOut(auth);
       return;
     }
 
-    usuarioLogado.innerText = "Logado como: " + email;
-    console.log("Login OK:", email);
+    alert("Login realizado com sucesso!");
   } catch (erro) {
-    console.error(erro);
-    alert("Erro ao fazer login.");
+    console.error("Erro no login:", erro);
+
+    if (erro.code === "auth/popup-closed-by-user") {
+      alert("Login cancelado.");
+    } else if (erro.code === "auth/unauthorized-domain") {
+      alert("Domínio do site não autorizado no Firebase.");
+    } else if (erro.code === "auth/popup-blocked") {
+      alert("O navegador bloqueou a janela de login.");
+    } else {
+      alert("Erro ao fazer login: " + erro.message);
+    }
   }
 });
+
 
 // Mantém o texto atualizado mesmo se a página recarregar
 onAuthStateChanged(auth, (user) => {
