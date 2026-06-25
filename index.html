@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Festival de Cosplay</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <h1>🎭 Festival de Cosplay 🎭</h1>
+    <p>Escolha seu cosplay favorito!</p>
+</header>
+<div class="login-area">
+
+<button id="loginGoogle">
+    Entrar com Google
+</button>
+
+<p id="usuarioLogado"></p>
+
+</div>
+
+<section class="cards">
+
+    <!-- PARTICIPANTE -->
+
+    <div class="card">
+        <img src="imagens/ravena.jpg" alt="Ravena">
+
+        <h2>Ana Julia de Oliveira da Paixão</h2>
+
+        <p><strong>Turma:</strong> 6A</p>
+
+        <p><strong>Personagem:</strong> Ravena</p>
+
+        <p>
+            A Ravena é uma super-heroína da DC Comics
+            muito famosa nos Jovens Titãs.
+        </p>
+
+        <button onclick="votar('Ana Julia')">
+            ⭐ Votar
+        </button>
+
+        <span id="Ana Julia">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/gojo.png" alt="Satoru Gojo">
+        <h2>Vitor Catafesta Pereira</h2>
+        <p><strong>Turma:</strong> 6B</p>
+        <p><strong>Personagem:</strong> Satoru Gojo</p>
+        <p>Um dos feiticeiros mais poderosos e populares de Jujutsu Kaisen.</p>
+        <button onclick="votar('VitorGojo')">⭐ Votar</button>
+        <span id="VitorGojo">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/sukuna.jpg" alt="Sukuna">
+        <h2>Pedro Trevisan Moura dos Santos</h2>
+        <p><strong>Turma:</strong> 6B</p>
+        <p><strong>Personagem:</strong> Sukuna</p>
+        <p>Feiticeiro humano extremamente poderoso do universo Jujutsu Kaisen.</p>
+        <button onclick="votar('PedroSukuna')">⭐ Votar</button>
+        <span id="PedroSukuna">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/jax.jpg" alt="Jax">
+        <h2>Manuela Rodrigues Esquisato</h2>
+        <p><strong>Turma:</strong> 6B</p>
+        <p><strong>Personagem:</strong> Jax</p>
+        <p>Personagem da animação The Amazing Digital Circus.</p>
+        <button onclick="votar('ManuelaJax')">⭐ Votar</button>
+        <span id="ManuelaJax">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/freddy.png" alt="Freddy">
+        <h2>Robson Daniel Mendes Vaz</h2>
+        <p><strong>Turma:</strong> 6C</p>
+        <p><strong>Personagem:</strong> Freddy Fazbear</p>
+        <p>O famoso urso animatrônico de Five Nights at Freddy's.</p>
+        <button onclick="votar('RobsonFreddy')">⭐ Votar</button>
+        <span id="RobsonFreddy">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/cinderela1.png" alt="Cinderela">
+        <h2>Izabella de Oliveira Schipfer</h2>
+        <p><strong>Turma:</strong> 6C</p>
+        <p><strong>Personagem:</strong> Cinderela</p>
+        <p>Princesa conhecida por sua bondade, perseverança e gentileza.</p>
+        <button onclick="votar('IzabellaCinderela')">⭐ Votar</button>
+        <span id="IzabellaCinderela">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/kakashi.jpg" alt="Kakashi">
+        <h2>João Vitor dos Santos da Silva</h2>
+        <p><strong>Turma:</strong> 6C</p>
+        <p><strong>Personagem:</strong> Kakashi Hatake</p>
+        <p>O lendário Ninja Copiador de Naruto.</p>
+        <button onclick="votar('JoaoKakashi')">⭐ Votar</button>
+        <span id="JoaoKakashi">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/tricky.jpg" alt="Tricky">
+        <h2>Isabelly Gonçalves de Souza</h2>
+        <p><strong>Turma:</strong> 7B</p>
+        <p><strong>Personagem:</strong> Tricky</p>
+        <p>Uma das personagens mais conhecidas de Subway Surfers.</p>
+        <button onclick="votar('IsabellyTricky')">⭐ Votar</button>
+        <span id="IsabellyTricky">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/batatinha.png" alt="Batatinha">
+        <h2>Isabela Bernardes</h2>
+        <p><strong>Turma:</strong> 7B</p>
+        <p><strong>Personagem:</strong> Batatinha</p>
+        <p>A divertida deusa das batatas da Turma da Batatinha.</p>
+        <button onclick="votar('IsabelaBatatinha')">⭐ Votar</button>
+        <span id="IsabelaBatatinha">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/doci.jpg" alt="Doci">
+        <h2>Sophia Camargo Silva</h2>
+        <p><strong>Turma:</strong> 7B</p>
+        <p><strong>Personagem:</strong> Doci</p>
+        <p>Irmã mais nova da Batatinha e princesa do reino.</p>
+        <button onclick="votar('SophiaDoci')">⭐ Votar</button>
+        <span id="SophiaDoci">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/cinderela2.jpg" alt="Cinderela">
+        <h2>Ariely de Gogoi Andrade</h2>
+        <p><strong>Turma:</strong> 7C</p>
+        <p><strong>Personagem:</strong> Cinderela</p>
+        <p>Uma das princesas mais famosas dos contos de fadas.</p>
+        <button onclick="votar('ArielyCinderela')">⭐ Votar</button>
+        <span id="ArielyCinderela">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/mulan.jpg" alt="Mulan">
+        <h2>Bruna Rafaela Gonçalves de Carvalho</h2>
+        <p><strong>Turma:</strong> 8A</p>
+        <p><strong>Personagem:</strong> Mulan</p>
+        <p>Heroína chinesa que lutou no lugar de seu pai.</p>
+        <button onclick="votar('BrunaMulan')">⭐ Votar</button>
+        <span id="BrunaMulan">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/moranguinho.jpg" alt="Moranguinho">
+        <h2>Ana Livia Mantovani</h2>
+        <p><strong>Turma:</strong> 8A</p>
+        <p><strong>Personagem:</strong> Moranguinho</p>
+        <p>Clássica personagem infantil conhecida pelo cheiro de morango.</p>
+        <button onclick="votar('AnaMoranguinho')">⭐ Votar</button>
+        <span id="AnaMoranguinho">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/odette.jpg" alt="Odette">
+        <h2>Maria Vitória Aparecida Oliveira</h2>
+        <p><strong>Turma:</strong> 8C</p>
+        <p><strong>Personagem:</strong> Odette (Cisne Branco)</p>
+        <p>Princesa do clássico balé O Lago dos Cisnes.</p>
+        <button onclick="votar('MariaOdette')">⭐ Votar</button>
+        <span id="MariaOdette">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/muichiro.jpg" alt="Muichiro">
+        <h2>Maria Clara Trindade Carrero</h2>
+        <p><strong>Turma:</strong> 8C</p>
+        <p><strong>Personagem:</strong> Muichiro Tokito</p>
+        <p>Hashira da Névoa do anime Demon Slayer.</p>
+        <button onclick="votar('MariaMuichiro')">⭐ Votar</button>
+        <span id="MariaMuichiro">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/jinx.jpg" alt="Jinx">
+        <h2>Rafaelly Fernandes Vilarino</h2>
+        <p><strong>Turma:</strong> 9A</p>
+        <p><strong>Personagem:</strong> Jinx</p>
+        <p>Personagem icônica de Arcane e League of Legends.</p>
+        <button onclick="votar('RafaellyJinx')">⭐ Votar</button>
+        <span id="RafaellyJinx">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/izana.jpg" alt="Izana">
+        <h2>Higor Andrade da Silva</h2>
+        <p><strong>Turma:</strong> 9A</p>
+        <p><strong>Personagem:</strong> Izana Kurokawa</p>
+        <p>Líder da gangue Tenjiku em Tokyo Revengers.</p>
+        <button onclick="votar('HigorIzana')">⭐ Votar</button>
+        <span id="HigorIzana">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/daniel.png" alt="Daniel">
+        <h2>Lauren Leite Albanez</h2>
+        <p><strong>Turma:</strong> 9A</p>
+        <p><strong>Personagem:</strong> Daniel (Life is Strange 2)</p>
+        <p>Garoto com poderes de telecinese do jogo Life is Strange 2.</p>
+        <button onclick="votar('LaurenDaniel')">⭐ Votar</button>
+        <span id="LaurenDaniel">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/ayano.png" alt="Ayano">
+        <h2>Ana Flavia Trevisan</h2>
+        <p><strong>Turma:</strong> 3A</p>
+        <p><strong>Personagem:</strong> Ayano</p>
+        <p>Estudante envolvida em acontecimentos sobrenaturais no anime.</p>
+        <button onclick="votar('AnaAyano')">⭐ Votar</button>
+        <span id="AnaAyano">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/stan.png" alt="Tio Stan">
+        <h2>João Victor de Moura dos Reis</h2>
+        <p><strong>Turma:</strong> 3TEC</p>
+        <p><strong>Personagem:</strong> Tio Stan</p>
+        <p>Personagem marcante da série Gravity Falls.</p>
+        <button onclick="votar('JoaoStan')">⭐ Votar</button>
+        <span id="JoaoStan">0 votos</span>
+    </div>
+
+    <div class="card">
+        <img src="imagens/dipper.jpg" alt="Dipper">
+        <h2>Vinicius Francisco Ferreira de Azevedo</h2>
+        <p><strong>Turma:</strong> 3TEC</p>
+        <p><strong>Personagem:</strong> Dipper Pines</p>
+        <p>Garoto inteligente e curioso da série Gravity Falls.</p>
+        <button onclick="votar('ViniciusDipper')">⭐ Votar</button>
+        <span id="ViniciusDipper">0 votos</span>
+    </div>
+</section>
+<section class="ranking-container">
+
+    <h2>🏆 Ranking Geral</h2>
+
+    <div id="ranking"></div>
+
+</section>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

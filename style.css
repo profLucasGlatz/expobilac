@@ -1,0 +1,138 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Baloo 2', cursive;
+    background:#e3f2fd;
+}
+
+header{
+    background:#ff80ab;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+header h1{
+    font-size:3rem;
+}
+
+.cards{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:25px;
+    padding:30px;
+}
+
+.card{
+    width:320px;
+
+    background:white;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+
+    transition:.3s;
+}
+
+.card:hover{
+    transform:scale(1.05);
+}
+
+.card img{
+    width:100%;
+    height:350px;
+    object-fit:cover;
+    object-position: center top; 
+}
+
+.card h2{
+    color:#2196f3;
+    padding:10px;
+}
+
+.card p{
+    padding:0 10px 10px;
+}
+
+button{
+    margin:10px;
+
+    width:90%;
+
+    border:none;
+
+    border-radius:15px;
+
+    padding:12px;
+
+    background:#ffd54f;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    font-weight:bold;
+}
+
+button:hover{
+    background:#ffca28;
+}
+
+span{
+    display:block;
+
+    text-align:center;
+
+    margin-bottom:15px;
+
+    font-weight:bold;
+
+    color:#4caf50;
+}
+.ranking-container{
+    background:white;
+    max-width:900px;
+    margin:40px auto;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 15px rgba(0,0,0,.15);
+}
+
+.ranking-container h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.ranking-item{
+    padding:12px;
+    margin:8px 0;
+    background:#fff8e1;
+    border-radius:10px;
+    font-size:18px;
+}
+.login-area{
+    text-align:center;
+    margin:20px;
+}
+
+#loginGoogle{
+    background:#4285F4;
+    color:white;
+    padding:15px 25px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+#usuarioLogado{
+    margin-top:10px;
+    font-weight:bold;
+}
