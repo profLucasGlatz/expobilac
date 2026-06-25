@@ -77,13 +77,17 @@ document.getElementById("usuarioLogado").innerText =
 // Tornar a função acessível ao HTML
 window.votar = async function (nome) {
 
-    // 1. precisa estar logado
-    if (!auth.currentUser) {
-        alert("Faça login com sua conta da escola.");
-        return;
+    if (!usuarioAtual) {
+    alert("Carregando autenticação, tente novamente.");
+    return;
     }
 
-    const email = auth.currentUser.email;
+    if (!usuarioAtual) {
+    alert("Faça login com sua conta da escola.");
+    return;
+    }
+
+    const email = usuarioAtual.email;
 
     // 2. valida domínio da escola
     if (!email.endsWith("@escola.pr.gov.br")) {
