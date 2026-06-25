@@ -1,12 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { 
-  getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 import {
-  getFirestore, doc, setDoc, getDoc, collection, onSnapshot, increment
+  getFirestore, doc, setDoc, collection, onSnapshot, increment
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-// ✅ Suas credenciais oficiais inseridas corretamente
+// Suas credenciais oficiais do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCc_2ItItpmbyNbsGdtNgWlJPPpN7SMdQc",
   authDomain: "votacao-cosplay.firebaseapp.com",
@@ -20,89 +17,46 @@ const firebaseConfig = {
 // Inicializando as ferramentas do Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-// Variável global para saber quem está logado
-let usuarioAtual = null;
 
 
-const btnLogin = document.getElementById("loginGoogle");
-const txtUsuario = document.getElementById("usuarioLogado");
-
-// Monitora se o usuário entrou ou saiu
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    usuarioAtual = user;
-    if (btnLogin) btnLogin.style.display = "none";
-    if (txtUsuario) txtUsuario.textContent = `Olá, ${user.displayName}!`;
-    
-    // Verifica no banco se esse usuário já votou
-    verificarSeJaVotou(user.uid);
-  } else {
-    usuarioAtual = null;
-    if (btnLogin) btnLogin.style.display = "block";
-    if (txtUsuario) txtUsuario.textContent = "Faça login com o Google para poder votar.";
-    bloquearTodosOsBotoes(true, "Faça login para votar");
-  }
-});
-
-// Evento do botão de login
-if (btnLogin) {
-  btnLogin.addEventListener("click", async () => {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Erro no login:", error);
-      alert("Falha ao entrar com o Google. Verifique se a janela pop-up não foi bloqueada.");
-    }
-  });
-}
-
-// Definir como window.votar resolve o erro "votar is not defined" no seu HTML
 window.votar = async function(idCandidato) {
-  if (!usuarioAtual) {
-    alert("Você precisa fazer login com o Google antes de votar!");
+  // 🔒 Trava: já votou neste navegador?
+  if (localStorage.getItem("jaVotouCosplay") === "true") {
+    alert("Você já votou nesta edição do festival!");
     return;
   }
 
   // Bloqueia temporariamente para evitar cliques duplos rápidos
   bloquearTodosOsBotoes(true, "Processando...");
 
-  const userRef = doc(db, "usuarios_votos", usuarioAtual.uid);
   const candidatoRef = doc(db, "votos", idCandidato);
 
   try {
-    // 1. Salva que o usuário (UID) já escolheu alguém
-    await setDoc(userRef, { 
-      votouEm: idCandidato,
-      dataVoto: new Date()
-    });
-
-    // 2. Soma +1 no candidato escolhido
+    // Soma +1 no candidato escolhido diretamente no Firestore
     await setDoc(candidatoRef, { 
       id: idCandidato,
       votos: increment(1) 
     }, { merge: true });
 
-    alert("Seu voto foi computado com sucesso!");
+    // ✅ Salva localmente no navegador que o usuário já votou
+    localStorage.setItem("jaVotouCosplay", "true");
+    localStorage.setItem("votouNoCosplay", idCandidato);
+
+    alert("Seu voto foi computado com sucesso! Obrigado por participar.");
     marcarBotaoVotado(idCandidato);
 
   } catch (error) {
     console.error("Erro ao salvar voto:", error);
-    alert("Houve um erro ou você já votou nesta conta.");
-    verificarSeJaVotou(usuarioAtual.uid);
+    alert("Houve um erro ao processar seu voto. Tente novamente.");
+    verificarSeJaVotou();
   }
 };
 
-// Verifica no Firestore se o UID logado já tem registro de voto
-async function verificarSeJaVotou(uid) {
-  const userRef = doc(db, "usuarios_votos", uid);
-  const docSnap = await getDoc(userRef);
-
-  if (docSnap.exists()) {
-    const dadosVoto = docSnap.data();
-    marcarBotaoVotado(dadosVoto.votouEm);
+// Função que checa o localStorage assim que a página abre
+function verificarSeJaVotou() {
+  if (localStorage.getItem("jaVotouCosplay") === "true") {
+    const idVotado = localStorage.getItem("votouNoCosplay");
+    marcarBotaoVotado(idVotado);
   } else {
     bloquearTodosOsBotoes(false);
   }
@@ -135,8 +89,6 @@ function marcarBotaoVotado(idCandidato) {
   });
 }
 
-
-
 onSnapshot(collection(db, "votos"), (snap) => {
   const dados = [];
   
@@ -144,14 +96,14 @@ onSnapshot(collection(db, "votos"), (snap) => {
     const item = d.data();
     dados.push(item);
     
-    // Atualiza o contador ("0 votos") embaixo de cada card de cosplay
+    // Atualiza o contador de votos embaixo do card de cada participante
     const spanVotos = document.getElementById(item.id);
     if (spanVotos) {
       spanVotos.textContent = `${item.votos || 0} ${item.votos === 1 ? 'voto' : 'votos'}`;
     }
   });
 
-  // Ordena do mais votado para o menos votado
+  // Ordena o Ranking do mais votado para o menos votado
   dados.sort((a, b) => b.votos - a.votos);
 
   let html = "";
@@ -161,7 +113,7 @@ onSnapshot(collection(db, "votos"), (snap) => {
     else if (i === 1) medalha = "🥈 ";
     else if (i === 2) medalha = "🥉 ";
 
-    // Transforma "ana_ravena" em "Ravena" para exibir bonito no ranking
+    // Transforma "ana_ravena" em "Ravena" para o ranking
     const nomeFormatado = item.id
       .replace(/^[a-z]+_/, "") 
       .replaceAll("_", " ")
@@ -178,3 +130,6 @@ onSnapshot(collection(db, "votos"), (snap) => {
   const divRanking = document.getElementById("ranking");
   if (divRanking) divRanking.innerHTML = html;
 });
+
+// Executa a checagem assim que o script carrega
+verificarSeJaVotou();
